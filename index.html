@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechGear - Premium Audio Accessories</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            /* Light Mode Palette */
+            --primary-light: #1a73e8;
+            --secondary-light: #34495e;
+            --background-light: #f4f7f6;
+            --text-primary-light: #2c3e50;
+            --text-secondary-light: #495057;
+            --card-light: #ffffff;
+            --border-light: #e0e0e0;
+            --success-light: #4CAF50;
+
+            /* Dark Mode Palette */
+            --primary-dark: #4a90e2;
+            --secondary-dark: #6b7280;
+            --background-dark: #121212;
+            --text-primary-dark: #e0e0e0;
+            --text-secondary-dark: #a0a0a0;
+            --card-dark: #1e1e1e;
+            --border-dark: #333333;
+            --success-dark: #81c784;
+
+            /* Default to Light Mode */
+            --primary: var(--primary-light);
+            --secondary: var(--secondary-light);
+            --background: var(--background-light);
+            --text-primary: var(--text-primary-light);
+            --text-secondary: var(--text-secondary-light);
+            --card: var(--card-light);
+            --border: var(--border-light);
+            --success: var(--success-light);
+        }
+
+        /* Theme Transition */
+        * {
+            transition: 
+                background-color 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        body.dark-mode {
+            --primary: var(--primary-dark);
+            --secondary: var(--secondary-dark);
+            --background: var(--background-dark);
+            --text-primary: var(--text-primary-dark);
+            --text-secondary: var(--text-secondary-dark);
+            --card: var(--card-dark);
+            --border: var(--border-dark);
+            --success: var(--success-dark);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Theme Switcher Styles */
+        .theme-switcher {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .theme-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid transparent;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .theme-option:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-option.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        .theme-option-light {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        }
+
+        .theme-option-dark {
+            background: linear-gradient(135deg, #434343 0%, #000000 100%);
+        }
+
+        .theme-option-system {
+            background: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%);
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: var(--card);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .navbar-brand {
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand i {
+            margin-right: 10px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            list-style: none;
+            gap: 1rem;
+        }
+
+        .navbar-menu a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .navbar-menu a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .navbar-menu a:hover::after {
+            width: 100%;
+        }
+
+        /* Product Details */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .product-details {
+            display: flex;
+            background-color: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .product-details-image {
+            width: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-details-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-details-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .product-details-info {
+            width: 50%;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .product-details-info h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .product-details-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .product-details-form label {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .product-details-form input,
+        .product-details-form select {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            background-color: var(--card);
+            color: var(--text-primary);
+            transition: border-color 0.3s ease;
+        }
+
+        .product-details-form input:focus,
+        .product-details-form select:focus {
+            border-color: var(--primary);
+        }
+
+        .product-details-form input[type="submit"] {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .product-details-form input[type="submit"]:hover {
+            opacity: 0.9;
+        }
+
+        /* Reviews Table */
+        .reviews-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .reviews-table th {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .reviews-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            background-color: var(--card);
+        }
+
+        .star-rating {
+            color: #ffc107;
+        }
+
+        /* Cart Notification */
+        #cart-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--success);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .navbar-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .navbar-menu {
+                width: 100%;
+                flex-direction: column;
+                margin-top: 1rem;
+            }
+
+            .product-details {
+                flex-direction: column;
+            }
+
+            .product-details-image,
+            .product-details-info {
+                width: 100%;
+            }
+
+            .theme-switcher {
+                bottom: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cart Notification -->
+    <div id="cart-notification">
+        <i class="fas fa-shopping-cart cart-icon"></i>
+        <span id="notification-text">Item added to cart</span>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <i class="fas fa-headphones"></i>TechGear
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Products</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Product Details Section -->
+    <div class="container">
+        <div class="product-details">
+            <div class="product-details-image">
+                <img src="./airpods-max-select-202409-midnight_FV1.jpeg" alt="Wireless Headphones">
+            </div>
+            <div class="product-details-info">
+                <h2>Wireless Headphones</h2>
+                <p>High-quality wireless headphones with noise cancellation technology. Enjoy crystal clear sound and comfortable design.</p>
+                
+                <form class="product-details-form">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" id="quantity" name="quantity" min="1" value="1">
+                    
+                    <label for="color">Color</label>
+                    <select id="color" name="color">
+                        <option>Black</option>
+                        <option>Blue</option>
+                        <option>White</option>
+                    </select>
+                    
+                    <input type="submit" value="Add to Cart">
+                </form>
+            </div>
+        </div>
+
+        <!-- Reviews Table -->
+        <table class="reviews-table">
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Rating</th>
+                    <th>Review</th>
+                </tr>
+            </thead> 
+            <tbody>
+                <tr>
+                    <td>John Doe</td>
+                    <td class="star-rating">★★★★★</td>
+                    <td>Amazing sound quality and very comfortable!</td>
+                </tr>
+                <tr>
+                    <td>Sarah Smith</td>
+                    <td class="star-rating">★★★★☆</td>
+                    <td>Great noise cancellation, battery life could be better.</td>
+                </tr>
+                <tr>
+                    <td>Michael Johnson</td>
+                    <td class="star-rating">★★★★★</td>
+                    <td>Perfect for work and travel. Highly recommended!</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Theme Switcher -->
+    <div class="theme-switcher">
+        <div class="theme-option theme-option-light" data-theme="light" title="Light Mode">
+            <i class="fas fa-sun"></i>
+        </div>
+        <div class="theme-option theme-option-dark" data-theme="dark" title="Dark Mode">
+            <i class="fas fa-moon"></i>
+        </div>
+        <div class="theme-option theme-option-system" data-theme="system" title="System Preference">
+            <i class="fas fa-desktop"></i>
+        </div>
+    </div>
+
+    <script>
+        class CartManager {
+            constructor() {
+                this.items = [];
+                this.cartNotification = document.getElementById('cart-notification');
+                this.notificationText = document.getElementById('notification-text');
+            }
+
+            addToCart(product) {
+                this.items.push(product);
+                this.showNotification(product);
+            }
+
+            showNotification(product) {
+                this.notificationText.textContent = `${product.name} added to cart`;
+                this.cartNotification.style.display = 'block';
+                
+                setTimeout(() => {
+                    this.cartNotification.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        class ThemeManager {
+            constructor() {
+                this.themeOptions = document.querySelectorAll('.theme-option');
+                this.init();
+            }
+
+            init() {
+                this.loadTheme();
+                this.themeOptions.forEach(option => {
+                    option.addEventListener('click', () => this.setTheme(option.dataset.theme));
+                });
+                window.matchMedia('(prefers-color-scheme: dark)').addListener(this.handleSystemThemeChange.bind(this));
+            }
+
+            loadTheme() {
+                const savedTheme = localStorage.getItem('theme') || 'system';
+                this.setTheme(savedTheme);
+            }
+
+            setTheme(theme) {
+                this.themeOptions.forEach(option => {
+                    option.classList.remove('active');
+                });
+
+                const selectedOption = 
+                    document.querySelector(`.theme-option[data-theme="${theme}"]`);
+                selectedOption.classList.add('active');
+
+                switch(theme) {
+                    case 'light':
+                        document.body.classList.remove('dark-mode');
+                        break;
+                    case 'dark':
+                        document.body.classList.add('dark-mode');
+                        break;
+                    case 'system':
+                        this.applySystemTheme();
+                        break;
+                }
+
+                localStorage.setItem('theme', theme);
+            }
+
+            applySystemTheme() {
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.body.classList.add('dark-mode');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                }
+            }
+
+            handleSystemThemeChange(e) {
+                if (localStorage.getItem('theme') === 'system') {
+                    this.applySystemTheme();
+                }
+            }
+        }
+
+        // Initialize Managers
+        const cartManager = new CartManager();
+        const themeManager = new ThemeManager();
+
+        // Add to Cart Form Submission
+        document.querySelector('.product-details-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const product = {
+                name: document.querySelector('.product-details-info h2').textContent,
+                quantity: document.getElementById('quantity').value,
+                color: document.getElementById('color').value
+            };
+
+            cartManager.addToCart(product);
+        });
+    </script>
+</body>
+</html>
